@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row" *ngIf="featureCollection">
+    <div class="col">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Alert Status</th>
+          <th scope="col">Place</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr
+          *ngFor="let feature of featureCollection.features | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
+          <td>
+            <div class="col-md-1 alert {{ getAlertStatus(feature.properties.alert) }}" role="alert"></div>
+          </td>
+          <td>
+            <p [ngClass]="{'update': feature.isNew}">{{ feature.properties.place }}</p>
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary"
+                    *ngIf="feature.properties.detail && feature.properties.detail != ''"
+                    (click)="getDetail(feature.geometry.coordinates[0], feature.geometry.coordinates[1])">Detail
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="100"></ngb-pagination>
+    </div>
+    <div class="col" *ngIf="showDetail">
+      <app-earthquake-detail [latitude]="latitude" [longitude]="longitude"></app-earthquake-detail>
+    </div>
+  </div>
+  <div class="row" *ngIf="!featureCollection">
+    <div class="col-sm-12">
+      <div class="alert alert-warning" role="alert">There is no data to show</div>
+    </div>
+  </div>
+</div>
